@@ -1,5 +1,4 @@
-datasci_course_materials
-========================
+Introduction to Data Science
+============================
 
-Public repository for course materials for the Spring 2013 and 2014 sessions of Introduction to Data Science, an online coursera course.
-
+Fork of the materials repository with my solutions to the assignments. This repository is just to keep a backup of my solutions, note it might be incomplete or have errors.
