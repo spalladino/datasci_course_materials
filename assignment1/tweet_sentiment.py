@@ -25,7 +25,7 @@ def main():
       tweet = json.loads(tweet_json)
       text = tweet['text']
       words = split_words(text)
-      print sentiment(scores, words), text
+      print sentiment(scores, words)
 
 if __name__ == '__main__':
   main()
