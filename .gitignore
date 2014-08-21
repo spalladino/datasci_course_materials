@@ -1,3 +1,4 @@
 twitter.cfg
 output.txt
 *.class
+*.pyc
