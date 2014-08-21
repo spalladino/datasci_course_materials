@@ -4,9 +4,10 @@ import csv as csv
 import sys
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 
-def prepare(file):
+def prepare(file, survived_info=True):
   df = pd.read_csv(file, header=0)
 
   df = pd.concat([df, pd.get_dummies(df['Embarked'], prefix='Embarked')], axis=1)
@@ -15,10 +16,23 @@ def prepare(file):
 
   df = df.fillna(value={'Age': df['Age'].dropna().median(), 'Fare': df['Fare'].dropna().median()})
 
+  survived = None
+  if survived_info:
+    survived = df['Survived'].values
+    df = df.drop(['Survived'], axis=1)
+
   ids = df['PassengerId'].values
   df = df.drop(['PassengerId', 'Pclass', 'Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'], axis=1)
 
-  return (df, ids)
+  poly = PolynomialFeatures(interaction_only=True)
+  polydata = poly.fit_transform(df)
+
+  cols = np.hstack((['1s'], df.columns, [None]*(polydata.shape[1] - len(df.columns) -1)))
+  polydf = pd.DataFrame.from_records(polydata, columns=cols)
+
+  if survived_info: polydf['Survived'] = survived
+
+  return (polydf, ids)
 
 
 def train_model(train):
@@ -30,7 +44,7 @@ def train_model(train):
 
 
 def predict(model, test):
-  test_data, test_ids = prepare(test)
+  test_data, test_ids = prepare(test, survived_info=False)
   output = model.predict(test_data).astype(int)
   return (output, test_ids)
 
